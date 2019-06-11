@@ -43,7 +43,7 @@ async function updateCustomer(req, res) {
   if (!newCustomer) {
     return res.status(404).json('Customer not found');
   }
-  return res.json(newCustomer);
+  return res.status(201).json(newCustomer);
 }
 
 async function deleteCustomer(req, res) {
