@@ -1,4 +1,5 @@
 const Business = require('../models/business');
+const Category = require('../models/category');
 
 
 async function addBusiness(req, res) {
@@ -27,7 +28,7 @@ async function addBusiness(req, res) {
 
 async function getBusiness(req, res) {
   const { businessId } = req.params;
-  const business = await Business.findById(businessId)    
+  const business = await Business.findById(businessId).populate('categories','name');
 
   if (!business) {
     return res.status(404).json('business not found');
@@ -78,37 +79,38 @@ async function deleteBusiness(req, res) {
   return res.sendStatus(200);
 }
 
-// async function addCourse(req, res) {
-//   const { id, code } = req.params;
-//   const course = await Course.findById(code).exec();
-//   const category = await category.findById(id).exec();
-//   if (!category || !course) {
-//     return res.status(404).json('category or course not found');
-//   }
-//   category.courses.addToSet(course._id);
-//   course.categorys.addToSet(category._id);
-//   await course.save();
-//   await category.save();
-//   return res.json(category);
-// }
+async function addCategory(req, res) {
+  const { businessId, categoryId } = req.params;
+  const business = await Business.findById(businessId).exec();
+  const category = await Category.findById(categoryId).exec();
+  if (!business || !category) {
+    return res.status(404).json('Category or Business not found');
+  }
+  business.categories.addToSet(category._id);
+  category.businesses.addToSet(business._id);
+  
+  await business.save();
+  await category.save();
+  return res.json(business);
+}
 
-// async function deleteCourse(req, res) {
-//   const { id, code } = req.params;
-//   const category = await category.findById(id).exec();
-//   const course = await Course.findById(code).exec();
-//   if (!category || !course) {
-//     return res.status(404).json('category or course not found');
-//   }
-//   const oldCount = category.courses.length;
-//   category.courses.pull(course._id);
-//   if (category.courses.length === oldCount) {
-//     return res.status(404).json('Enrolment does not exist');
-//   }
-//   course.categorys.pull(category._id);
-//   await course.save();
-//   await category.save();
-//   return res.json(category);
-// }
+async function deleteCategory(req, res) {
+  const { businessId, categoryId } = req.params;
+  const category = await Category.findById(categoryId).exec();
+  const business = await Business.findById(businessId).exec();
+  if ( !category || !business) {
+    return res.status(404).json('Business or Category not found');
+  }
+  const oldCount = business.categories.length;
+  business.categories.pull(category._id);
+  if (business.categories.length === oldCount) {
+    return res.status(404).json('Enrolment does not exist');
+  }
+  category.businesses.pull(business._id);
+  await business.save();
+  await category.save();
+  return res.json(business);
+}
 
 module.exports = {
   addBusiness,
@@ -116,4 +118,6 @@ module.exports = {
   getBusiness,
   updateBusiness,
   deleteBusiness,
+  addCategory,
+  deleteCategory
 };

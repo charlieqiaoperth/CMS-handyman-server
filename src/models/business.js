@@ -6,7 +6,7 @@ schema = new mongoose.Schema({
         required:true
     },
     ABN: {
-        type:Number,  
+        type:String,  
         // required:true,
         default:''      
     },
@@ -34,13 +34,13 @@ schema = new mongoose.Schema({
         default:'QLD',
         enum: ['NSW', 'VIC', 'QLD', 'WA', 'TAS','SA','ACT', 'NT'], 
     },
-    categroies:[{
+    categories:[{
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Categroy'
+        ref: 'Category'
     }],
-    bookings:[{
+    orders:[{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Booking',
+        ref: 'Order',
     }]
 });
 
