@@ -19,7 +19,7 @@ schema = new mongoose.Schema({
         // required:true,
         default:"000000",
     },
-    streeAddress:{
+    streetAddress:{
         type:String,
         // required:true,
         default:''

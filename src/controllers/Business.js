@@ -8,7 +8,7 @@ async function addBusiness(req, res) {
     ABN,
     email,
     phone,
-    streeAddress,
+    streetAddress,
     postcode,
     state } = req.body;
 
@@ -17,7 +17,7 @@ async function addBusiness(req, res) {
     ABN,
     email,
     phone,
-    streeAddress,
+    streetAddress,
     postcode,
     state,
       
@@ -48,7 +48,7 @@ async function updateBusiness(req, res) {
     ABN,
     email,
     phone,
-    streeAddress,
+    streetAddress,
     postcode,
     state } = req.body;
   const newBusiness = await Business.findByIdAndUpdate(
@@ -57,7 +57,7 @@ async function updateBusiness(req, res) {
         ABN,
         email,
         phone,
-        streeAddress,
+        streetAddress,
         postcode,
         state },
     {
