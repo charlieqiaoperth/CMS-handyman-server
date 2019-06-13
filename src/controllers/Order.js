@@ -1,5 +1,5 @@
-// const Business = require('../models/business');
-// const Category = require('../models/category');
+const Business = require('../models/business');
+const Customer = require('../models/customer');
 const Order = require('../models/order');
 
 
@@ -26,7 +26,12 @@ async function addOrder(req, res) {
     Comments      
   });
   await order.save();
-
+  const customerConnection = await Customer.findById(customer).exec();
+  const businessConnection = await Business.findById(business).exec();
+  customerConnection.orders.addToSet(order._id);
+  businessConnection.orders.addToSet(order._id);
+  await customerConnection.save();
+  await businessConnection.save();
   return res.status(201).json(order);
 }
 
@@ -86,45 +91,22 @@ async function updateOrder(req, res) {
 
 async function deleteOrder(req, res) {
   const { orderId } = req.params;
-  const order = await Order.findByIdAndDelete(orderId).exec();
+
+  const order = await Order.findById(orderId).exec();
   if (!order) {
     return res.status(404).json('Order not found');
   }
+  const customerConnection = await Customer.findById(order.customer).exec();
+  const businessConnection = await Business.findById(order.business).exec();
+  customerConnection.orders.pull(order._id);
+  businessConnection.orders.pull(order._id);
+  await customerConnection.save();
+  await businessConnection.save();
+  await Order.findByIdAndDelete(orderId).exec();
   return res.sendStatus(200);
-}
+};
 
-// async function addCategory(req, res) {
-//   const { businessId, categoryId } = req.params;
-//   const business = await Business.findById(businessId).exec();
-//   const category = await Category.findById(categoryId).exec();
-//   if (!business || !category) {
-//     return res.status(404).json('Category or Business not found');
-//   }
-//   business.categories.addToSet(category._id);
-//   category.businesses.addToSet(business._id);
-  
-//   await business.save();
-//   await category.save();
-//   return res.json(business);
-// }
 
-// async function deleteCategory(req, res) {
-//   const { businessId, categoryId } = req.params;
-//   const category = await Category.findById(categoryId).exec();
-//   const business = await Business.findById(businessId).exec();
-//   if ( !category || !business) {
-//     return res.status(404).json('Business or Category not found');
-//   }
-//   const oldCount = business.categories.length;
-//   business.categories.pull(category._id);
-//   if (business.categories.length === oldCount) {
-//     return res.status(404).json('Enrolment does not exist');
-//   }
-//   category.businesses.pull(business._id);
-//   await business.save();
-//   await category.save();
-//   return res.json(business);
-// }
 
 module.exports = {
   addOrder,
@@ -132,6 +114,4 @@ module.exports = {
   getOrder,
   updateOrder,
   deleteOrder,
-//   addCategory,
-//   deleteCategory
 };
