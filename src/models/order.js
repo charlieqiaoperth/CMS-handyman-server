@@ -57,7 +57,7 @@ schema= new mongoose.Schema({
             select: 'customerName', 
             });          
             query.select('customer business  category status grade comments');
-            query.skip(page-1)*pageSize;
+            query.skip((page-1)*pageSize);
             query.limit(pageSize);             
     } ;
     if ( searchType==="business") {
