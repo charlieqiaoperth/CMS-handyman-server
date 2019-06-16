@@ -26,7 +26,11 @@ async function getCustomer(req, res) {
 }
 
 async function getAllCustomers(req, res) {
-  const customers = await Customer.find().exec();
+  const key = req.query.key;
+  const sort=req.query.sort;
+  const page=parseInt(req.query.page);
+  const pageSize = parseInt(req.query.pageSize);
+  const customers = await Customer.searchQuery(key,page,pageSize,sort);
   return res.json(customers);
 }
 
