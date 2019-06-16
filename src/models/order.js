@@ -24,21 +24,15 @@ schema= new mongoose.Schema({
     },
     timeRecord:[{
         type:Date,
-    }],
-    // acceptedTime:{
-    //     type:Date,        
-    // },
-    // finishedTime:{
-    //     type:Date,        
-    // },
+    }],  
     jobLocation:{
         type:String,
         default:' ',
     },
     grade:{
         type:String,        
-        enum:[0, 1, 2, 3, 4, 5],
-        default:0
+        enum:['0', '1', '2', '3', '4', '5'],
+        default:'0'
     },
     comments:{
         type:String,              
@@ -47,11 +41,39 @@ schema= new mongoose.Schema({
     __v:{type:Number,select:false}, 
    },
     {
-    // timestamps:true,
+    
     timestamps: { createdAt: 'createTime', updatedAt: 'updateTime' }
     } 
   );
  
+  schema.statics.searchQuery = async function (searchType, Key, page, pageSize, sort) {
+    
+    const query= this.find();   
+             
+    if ( searchType==="customer") {
+            query.populate({
+            path: 'customer',
+            match: { customerName: new RegExp(Key,'i')},
+            select: 'customerName', 
+            });          
+            query.select('customer business  category status grade comments');
+            query.skip(page-1)*pageSize;
+            query.limit(pageSize);             
+    } ;
+    if ( searchType==="business") {
+        query.populate({
+        path: 'business',
+        match: { businessName: new RegExp(Key,'i')},     
+        });
+        query.select('customer business  category status grade comments');
+        query.skip(page-1)*pageSize;
+        query.limit(pageSize);             
+} ;
+   
+    sort ? query.sort(sort) :  query;
+    return query.exec();
+}
+
 const model = mongoose.model('Order', schema);
 
 module.exports = model;

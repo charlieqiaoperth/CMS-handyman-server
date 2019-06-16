@@ -43,7 +43,14 @@ schema = new mongoose.Schema({
         ref: 'Order',
     }]
 });
-
+schema.statics.searchQuery = async function (key, page, pageSize, sort) {
+ 
+    const query = this.find({'businessName':new RegExp(key,'i')});
+    query.skip(page-1)*pageSize;
+    query.limit(pageSize);          
+    sort ? query.sort(sort) :  query;
+    return query.exec();
+}
 const model = mongoose.model('Business', schema);
 
 module.exports = model;

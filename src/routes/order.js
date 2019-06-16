@@ -10,7 +10,6 @@ const {
 const router = express.Router();
 
 router.get('/', getAllOrders);
-// router.get('/',(req,res)=>(res.json('hahha')));//test route 
 router.get('/:orderId', getOrder);
 router.post('/', addOrder);
 router.put('/:orderId', updateOrder);

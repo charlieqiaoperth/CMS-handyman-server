@@ -31,7 +31,7 @@ const schema = new mongoose.Schema({
 
 schema.statics.searchQuery = async function (key, page, pageSize, sort) {
  
-    const query = this.find({'customerName':new RegExp(key,'i')});
+    const query =this.find({'customerName':new RegExp(key,'i')});
     query.skip(page-1)*pageSize;
     query.limit(pageSize);          
     sort ? query.sort(sort) :  query;

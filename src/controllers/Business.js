@@ -37,7 +37,12 @@ async function getBusiness(req, res) {
 }
 
 async function getAllBusinesses(req, res) {
-  const businesses = await Business.find().exec();
+  
+  const key = req.query.key;
+  const sort=req.query.sort;
+  const page=parseInt(req.query.page);
+  const pageSize = parseInt(req.query.pageSize);
+  const businesses = await Business.searchQuery(key,page,pageSize,sort);
   return res.json(businesses);
 }
 

@@ -46,7 +46,16 @@ async function getOrder(req, res) {
 }
 
 async function getAllOrders(req, res) {
-  const orders = await Order.find().exec();
+  // const orders = await Order.find().exec();
+  const searchType=req.query.searchType;
+ 
+  const key = req.query.key;
+  const sort=req.query.sort;
+  const page=parseInt(req.query.page);
+  const pageSize = parseInt(req.query.pageSize);
+  const orders = await Order.searchQuery(searchType, key, page, pageSize, sort);
+  // console.log(orders[0].business);
+  if (!orders[0].customer||!orders[0].business) {return res.status(404).json('order not found')};
   return res.json(orders);
 }
 
