@@ -30,6 +30,7 @@ async function getAllCustomers(req, res) {
   const sort=req.query.sort;
   const page=parseInt(req.query.page);
   const pageSize = parseInt(req.query.pageSize);
+  if (pageSize===0) { pageSize = 10} ;
   const customers = await Customer.searchQuery(key,page,pageSize,sort);
   return res.json(customers);
 }
@@ -56,45 +57,10 @@ async function deleteCustomer(req, res) {
   if (!customer) {
     return res.status(404).json('Customer not found');
   }
-  // clean the refs
-//   await Course.updateMany(
-//     { _id: { $in: Customer.courses } },
-//     { $pull: { Customers: Customer._id } }
-//   ).exec();
+
   return res.sendStatus(200);
 }
 
-// async function addCourse(req, res) {
-//   const { id, code } = req.params;
-//   const course = await Course.findById(code).exec();
-//   const Customer = await Customer.findById(id).exec();
-//   if (!Customer || !course) {
-//     return res.status(404).json('Customer or course not found');
-//   }
-//   Customer.courses.addToSet(course._id);
-//   course.Customers.addToSet(Customer._id);
-//   await course.save();
-//   await Customer.save();
-//   return res.json(Customer);
-// }
-
-// async function deleteCourse(req, res) {
-//   const { id, code } = req.params;
-//   const Customer = await Customer.findById(id).exec();
-//   const course = await Course.findById(code).exec();
-//   if (!Customer || !course) {
-//     return res.status(404).json('Customer or course not found');
-//   }
-//   const oldCount = Customer.courses.length;
-//   Customer.courses.pull(course._id);
-//   if (Customer.courses.length === oldCount) {
-//     return res.status(404).json('Enrolment does not exist');
-//   }
-//   course.Customers.pull(Customer._id);
-//   await course.save();
-//   await Customer.save();
-//   return res.json(Customer);
-// }
 
 module.exports = {
   addCustomer,

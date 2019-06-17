@@ -1,0 +1,942 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is a API server for JR-Handyman-CMS",
+    "version": "1.0.0",
+    "title": "Handyman-CMS",
+    "contact": {
+      "email": "charlieqiaoperth@gmail.com"
+    }
+  },
+  "tags": [
+    {
+      "name": "user",
+      "description": "User authentication"
+    },
+    {
+      "name": "auth",
+      "description": "Auth about admin users"
+    },
+    {
+      "name": "customer",
+      "description": "Operations about customers"
+    },
+    {
+      "name": "business",
+      "description": "Operations about businesses"
+    },
+    {
+      "name": "order",
+      "description": "Operations about orders"
+    },
+    {
+      "name": "category",
+      "description": "Operations about categories"
+    }
+  ],  
+  "basePath": "/api",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Add a new admin user",
+        "description": "add a new admin user",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully created."
+          },
+          "400": {
+            "description": "User already exist."
+          }
+        }
+      }
+    },
+    "/auth": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Auth the admin user",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully created."
+          },
+          "401": {
+            "description": "Invalid username or password."
+          }
+        }
+      }
+    },
+    "/customers": {
+      "post": {
+        "tags": [
+          "customer"
+        ],
+        "summary": "Add a new customer",
+        "description": "add a new customer",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "customerName",
+            "description": "customer's name",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Customer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully created."
+          },
+          "400": {
+            "description": "Couldn't have been created."
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "customer"
+        ],
+        "summary": "Get customers by conditions",
+        "description": "get customers",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "query",
+            "description": "search keyword",
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Current page number",
+            "type": "integer"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Number of items on each page",
+            "type": "integer"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "How to sort the result",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully."
+          },
+          "400": {
+            "description": "Bad Request."
+          }
+        }
+      }
+    },
+    "/customers/{customerId}": {
+      "put": {
+        "tags": [
+          "customer"
+        ],
+        "summary": "Update an existing customer",
+        "description": "Returns a single record for its id.",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "description": "The customer's id",
+            "type": "string"
+          },
+          {
+            "name": "updated customer",
+            "in": "body",
+            "description": "updated customer",
+            "schema": {
+              "$ref": "#/definitions/Customer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A customer",
+            "schema": {
+              "$ref": "#/definitions/Customer"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "customer not found"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "customer"
+        ],
+        "summary": "get a customer by id",
+        "description": "Returns a single record for its id.",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "description": "The customer's id",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A customer",
+            "schema": {
+              "$ref": "#/definitions/Customer"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "customer not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "customer"
+        ],
+        "summary": "delete a customer by id",
+        "description": "Delete a single record for its id.",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "description": "The customer's id",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A customer",
+            "schema": {
+              "$ref": "#/definitions/Customer"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "customer not found"
+          }
+        }
+      }
+    },
+    "/businesses": {
+      "post": {
+        "tags": [
+          "business"
+        ],
+        "summary": "Add a new business",
+        "description": "add a new business",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "business",
+            "description": "add new business",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Customer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully created."
+          },
+          "400": {
+            "description": "Couldn't have been created."
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "business"
+        ],
+        "summary": "Get businesses by conditions",
+        "description": "get businesses",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "query",
+            "description": "search keyword",
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Current page number",
+            "type": "integer"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Number of items on each page",
+            "type": "integer"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "How to sort the result",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully."
+          },
+          "400": {
+            "description": "Bad Request."
+          }
+        }
+      }
+    },
+    "/businesses/{businessId}": {
+      "put": {
+        "tags": [
+          "business"
+        ],
+        "summary": "Update an existing business",
+        "description": "Returns a single record for its id.",
+        "parameters": [
+          {
+            "name": "businessId",
+            "in": "path",
+            "required": true,
+            "description": "The business's id",
+            "type": "string"
+          },
+          {
+            "name": "updated business",
+            "in": "body",
+            "description": "updated business",
+            "schema": {
+              "$ref": "#/definitions/Business"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A business",
+            "schema": {
+              "$ref": "#/definitions/Business"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "customer not found"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "business"
+        ],
+        "summary": "get a business by id",
+        "description": "Returns a single record for its id.",
+        "parameters": [
+          {
+            "name": "businessId",
+            "in": "path",
+            "required": true,
+            "description": "The business's id",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A business",
+            "schema": {
+              "$ref": "#/definitions/Business"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "customer not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "business"
+        ],
+        "summary": "delete a business by id",
+        "description": "Delete a single record for its id.",
+        "parameters": [
+          {
+            "name": "businessId",
+            "in": "path",
+            "required": true,
+            "description": "The business's id",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A business",
+            "schema": {
+              "$ref": "#/definitions/Business"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "customer not found"
+          }
+        }
+      }
+    },
+    "/businesses/{businessId}/categories/{categoryId}": {
+      "post": {
+        "tags": [
+          "business"
+        ],
+        "summary": "add a category to a business by id",
+        "parameters": [
+          {
+            "name": "businessId",
+            "in": "path",
+            "required": true,
+            "description": "The business's id",
+            "type": "string"
+          },
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "description": "The category's id",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A business",
+            "schema": {
+              "$ref": "#/definitions/Business"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "customer not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "business"
+        ],
+        "summary": "remove a category from business by id",
+        "parameters": [
+          {
+            "name": "businessId",
+            "in": "path",
+            "required": true,
+            "description": "The business's id",
+            "type": "string"
+          },
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "description": "The category's id",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A business",
+            "schema": {
+              "$ref": "#/definitions/Business"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "customer not found"
+          }
+        }
+      }
+    },
+    "/orders": {
+      "post": {
+        "tags": [
+          "order"
+        ],
+        "summary": "Add a new order",
+        "description": "add a new order",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "order",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Order"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully created."
+          },
+          "400": {
+            "description": "Couldn't have been created."
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "order"
+        ],
+        "summary": "Get customers by conditions",
+        "description": "get customers",
+        "parameters": [
+          {
+            "name": "searchType",
+            "in": "query",
+            "description": "search type",
+            "default": "customer",
+            "enum": [
+              "customer",
+              "business"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "key",
+            "in": "query",
+            "description": "search keyword about name",
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Current page number",
+            "type": "integer"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Number of items on each page",
+            "type": "integer"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "How to sort the result",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully."
+          },
+          "400": {
+            "description": "Bad Request."
+          }
+        }
+      }
+    },
+    "/orders/{orderId}": {
+      "put": {
+        "tags": [
+          "order"
+        ],
+        "summary": "Update an existing order",
+        "description": "Returns a single record for its id.",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "description": "The customer's id",
+            "type": "string"
+          },
+          {
+            "name": "updated customer",
+            "in": "body",
+            "description": "updated order",
+            "schema": {
+              "$ref": "#/definitions/Order"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A updated order",
+            "schema": {
+              "$ref": "#/definitions/Order"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "customer not found"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "order"
+        ],
+        "summary": "get a order by id",
+        "description": "Returns a single record for its id.",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "description": "The order's id",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A order",
+            "schema": {
+              "$ref": "#/definitions/Order"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "customer not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "order"
+        ],
+        "summary": "delete a order by id",
+        "description": "Delete a single record for its id.",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "description": "The order's id",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A order",
+            "schema": {
+              "$ref": "#/definitions/Order"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "customer not found"
+          }
+        }
+      }
+    },
+    "/categories": {
+      "post": {
+        "tags": [
+          "category"
+        ],
+        "summary": "Add a new category",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "name",
+            "description": "category's name",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Category"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully created."
+          },
+          "400": {
+            "description": "Couldn't have been created."
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "category"
+        ],
+        "summary": "Get all categories",
+        "responses": {
+          "200": {
+            "description": "Successfully."
+          },
+          "400": {
+            "description": "Bad Request."
+          }
+        }
+      }
+    },
+    "/categories/{categoryId}": {
+      "put": {
+        "tags": [
+          "category"
+        ],
+        "summary": "Update an existing customer",
+        "description": "Returns a single record for its id.",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "description": "The customer's id",
+            "type": "string"
+          },
+          {
+            "name": "updated customer",
+            "in": "body",
+            "description": "updated customer",
+            "schema": {
+              "$ref": "#/definitions/Category"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A updated category",
+            "schema": {
+              "$ref": "#/definitions/Category"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "category not found"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "category"
+        ],
+        "summary": "get a category by id",
+        "description": "Returns a single record for its id.",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "description": "The category's id",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A customer",
+            "schema": {
+              "$ref": "#/definitions/Category"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "category not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "category"
+        ],
+        "summary": "delete a category by id",
+        "description": "Delete a single record for its id.",
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "description": "The customer's id",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A customer",
+            "schema": {
+              "$ref": "#/definitions/Customer"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "customer not found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "Customer": {
+      "type": "object",
+      "properties": {
+        "customerName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "preferName": {
+          "type": "string",
+          "default": ""
+        },
+        "phone": {
+          "type": "string"
+        }
+      }
+    },
+    "Business": {
+      "type": "object",
+      "properties": {
+        "businessName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "ABN": {
+          "type": "string",
+          "default": ""
+        },
+        "phone": {
+          "type": "string"
+        },
+        "postcode": {
+          "type": "string"
+        }
+      }
+    },
+    "Order": {
+      "type": "object",
+      "properties": {
+        "customer": {
+          "type": "string"
+        },
+        "business": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "shipDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "type": "string",
+          "description": "Order Status",
+          "enum": [
+            "booking",
+            "accepted",
+            "finished"
+          ]
+        },
+        "joblocation": {
+          "type": "string"
+        },
+        "grade": {
+          "type": "string",
+          "default": "0",
+          "enum": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+          ]
+        },
+        "comments": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "Order"
+      }
+    },
+    "Category": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "Category"
+      }
+    }
+  }
+}
