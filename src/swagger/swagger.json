@@ -534,8 +534,7 @@
         "tags": [
           "order"
         ],
-        "summary": "Get customers by conditions",
-        "description": "get customers",
+        "summary": "Get orders by conditions",       
         "parameters": [
           {
             "name": "searchType",
@@ -595,11 +594,11 @@
             "name": "orderId",
             "in": "path",
             "required": true,
-            "description": "The customer's id",
+            "description": "The order's id",
             "type": "string"
           },
           {
-            "name": "updated customer",
+            "name": "updated order",
             "in": "body",
             "description": "updated order",
             "schema": {
