@@ -728,7 +728,7 @@
         "tags": [
           "category"
         ],
-        "summary": "Update an existing customer",
+        "summary": "Update an existing category",
         "description": "Returns a single record for its id.",
         "parameters": [
           {
