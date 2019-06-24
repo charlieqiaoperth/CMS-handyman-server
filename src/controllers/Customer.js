@@ -30,7 +30,7 @@ async function getAllCustomers(req, res) {
   const sort=req.query.sort;
   const page=parseInt(req.query.page);
   const pageSize = parseInt(req.query.pageSize);
-  if (pageSize===0) { pageSize = 10} ;
+  if (!pageSize) { pageSize = 10} ;
   const customers = await Customer.searchQuery(key,page,pageSize,sort);
   return res.json(customers);
 }

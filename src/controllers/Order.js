@@ -46,12 +46,15 @@ async function getOrder(req, res) {
 }
 
 async function getAllOrders(req, res) {
-  const searchType=req.query.searchType; 
+  let searchType=req.query.searchType; 
   const key = req.query.key;
   const sort=req.query.sort;
   const page=parseInt(req.query.page);
-  const pageSize = parseInt(req.query.pageSize);
-  if (pageSize===0) { pageSize = 10} ;
+  let pageSize = parseInt(req.query.pageSize);
+  if (!searchType) { searchType = "customer"} ;
+  console.log(searchType);
+  if (!pageSize) { pageSize = 10} ;
+ 
   const orders = await Order.searchQuery(searchType, key, page, pageSize, sort);
 
   if (!orders[0].customer||!orders[0].business) {return res.status(404).json('order not found')};
