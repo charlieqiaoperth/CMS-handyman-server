@@ -41,7 +41,7 @@ async function getAllBusinesses(req, res) {
   const key = req.query.key;
   const sort=req.query.sort;
   const page=parseInt(req.query.page);
-  const pageSize = parseInt(req.query.pageSize);
+  let pageSize = parseInt(req.query.pageSize);
   if (!pageSize) { pageSize = 10} ;
   const businesses = await Business.searchQuery(key,page,pageSize,sort);
   return res.json(businesses);
