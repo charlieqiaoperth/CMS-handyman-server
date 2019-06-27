@@ -10,10 +10,11 @@ async function addOrder(req, res) {
     category,
     status,
     timeRecord,
-    jobLocation,
-    grade,
+    jobLocation,  
+    grade,  
     Comments
      } = req.body;
+    //  const grade=req.body.grade.toString();
 
   const order = new Order({
     customer,
