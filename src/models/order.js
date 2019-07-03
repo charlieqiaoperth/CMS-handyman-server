@@ -46,16 +46,30 @@ schema= new mongoose.Schema({
     } 
   );
  
-  schema.statics.searchQuery = async function (searchType, Key, page, pageSize, sort) {
+  schema.statics.searchQuery = async function (searchType, key, page, pageSize, sort) {
     
-    const query= this.find();   
+    let query= this.find();   
              
     if ( searchType==="customer") {
             query.populate({
             path: 'customer',
-            match: { customerName: new RegExp(Key,'i')},
             select: 'customerName', 
-            });          
+            // match: { customerName: "john"},      //new RegExp(key,'i')  
+            
+            });
+            query.populate({
+                path: 'business',                
+                select: 'businessName', 
+                }); 
+            query.populate({
+            path: 'category',                
+            select: 'name', 
+            });
+            // query.find({"customer.customerName":new RegExp(key,'i')})
+            // query.find({customer:{customerName:"john"}});
+            // query.find({"customer":"john" });
+            // query.where('customer').$ne(null);
+            // query.{customer:{ $ne: null } }
             query.select('customer business  category status grade comments');
             query.skip((page-1)*pageSize);
             query.limit(pageSize);             
@@ -63,15 +77,50 @@ schema= new mongoose.Schema({
     if ( searchType==="business") {
         query.populate({
         path: 'business',
-        match: { businessName: new RegExp(Key,'i')},     
+        match: { businessName: new RegExp(key,'i')},  
+        select: 'businessName',    
         });
+        query.populate({
+            path: 'customer',                
+            select: 'customerName', 
+            }); 
+        query.populate({
+        path: 'category',                
+        select: 'name', 
+        });
+        // query.match({customer:{ $ne: null }}),
         query.select('customer business  category status grade comments');
         query.skip(page-1)*pageSize;
         query.limit(pageSize);             
 } ;
-   
+    
     sort ? query.sort(sort) :  query;
+    
     return query.exec();
+  
+
+// const aggregate =[
+//     {
+//         $lookup:
+//       {
+//         from: "Customer",
+//         localField: "customer",
+//         foreignField: "_id",
+//         as: "customerAll"
+//       }
+//     },
+//     {
+//         $project:
+//         {
+//             customerAll:1,
+//             business:1,
+//             status:1,
+//             customer:1
+//         }
+//     }
+// ];
+// return this.aggregate(aggregate);
+
 }
 
 const model = mongoose.model('Order', schema);

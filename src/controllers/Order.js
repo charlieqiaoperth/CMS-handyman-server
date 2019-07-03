@@ -58,7 +58,7 @@ async function getAllOrders(req, res) {
  
   const orders = await Order.searchQuery(searchType, key, page, pageSize, sort);
 
-  if (!orders[0].customer||!orders[0].business) {return res.status(404).json('order not found')};
+  // if (!orders[0].customer||!orders[0].business) {return res.status(404).json('order not found')};
   return res.json(orders);
 }
 
