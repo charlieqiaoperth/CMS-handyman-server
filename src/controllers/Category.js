@@ -23,8 +23,32 @@ async function getCategory(req, res) {
 }
 
 async function getAllCategories(req, res) {
-  const categorys = await Category.find().exec();
-  return res.json(categorys);
+  // const categorys = await Category.find().exec();
+  // return res.json(categorys);
+
+  // added filter function and category count that meets the filter
+  const {
+    searchType = 'name',
+    searchKeyword,
+    pageRequested = 1,
+    pageSize = 5,
+    sortType = 'name',
+    sortValue = 1,
+  } = req.query;
+  let categoryCount;
+  if (!searchType) {
+    categoryCount = await Category.countDocuments();
+  } else {
+    categoryCount = await Category.countDocuments({[searchType]: new RegExp(searchKeyword, 'i')});
+  }
+  const categories = await Category.searchByQuery(searchType, searchKeyword, pageRequested, pageSize, sortType, sortValue);
+  if (!categories || categories.length === 0) {
+    return res.status(404).json('Orders are not found');
+  }
+  if (typeof(categories) === 'string') {
+    return res.status(500).json(categories);
+  }
+  return res.json({categoryCount, categories});
 }
 
 async function updateCategory(req, res) {
