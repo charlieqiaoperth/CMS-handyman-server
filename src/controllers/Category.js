@@ -49,7 +49,7 @@ async function getAllCategories(req, res) {
   }
   const categories = await Category.searchByQuery(searchType, searchKeyword, pageRequested, pageSize, sortType, sortValue);
   if (!categories || categories.length === 0) {
-    return res.status(404).json('Orders are not found');
+    return res.status(404).json('Categories are not found');
   }
   if (typeof(categories) === 'string') {
     return res.status(500).json(categories);
