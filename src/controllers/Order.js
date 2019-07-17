@@ -54,7 +54,8 @@ async function getAllOrders(req, res) {
   let pageSize = parseInt(req.query.pageSize); 
   let orders = await Order.searchQuery(searchType, key, page, pageSize, sort);
   orders=orders.filter((e)=>{
-    return e.customer !==null
+        return e.customer !==null &&
+               e.business !==null
 }) ;
 
   if ( orders.length===0) {return res.status(404).json('order not found')};
