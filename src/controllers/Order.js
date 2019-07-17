@@ -51,8 +51,7 @@ async function getAllOrders(req, res) {
   const key = req.query.key;
   const sort=req.query.sort;
   const page=parseInt(req.query.page);
-  let pageSize = parseInt(req.query.pageSize);
- 
+  let pageSize = parseInt(req.query.pageSize); 
   let orders = await Order.searchQuery(searchType, key, page, pageSize, sort);
   orders=orders.filter((e)=>{
     return e.customer !==null
