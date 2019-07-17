@@ -46,7 +46,7 @@ schema= new mongoose.Schema({
     } 
   );
  
-  schema.statics.searchQuery = async function (searchType, key, page, pageSize, sort) {
+  schema.statics.searchQuery = async function (searchType="customer", key, page, pageSize=10, sort) {
     
     let query= this.find();   
              
@@ -54,7 +54,7 @@ schema= new mongoose.Schema({
             query.populate({
             path: 'customer',
             select: 'customerName', 
-            // match: { customerName: "john"},      //new RegExp(key,'i')  
+            match: { customerName: new RegExp(key,'i') },      //new RegExp(key,'i')  
             
             });
             query.populate({
@@ -64,13 +64,9 @@ schema= new mongoose.Schema({
             query.populate({
             path: 'category',                
             select: 'name', 
-            });
-            // query.find({"customer.customerName":new RegExp(key,'i')})
-            // query.find({customer:{customerName:"john"}});
-            // query.find({"customer":"john" });
-            // query.where('customer').$ne(null);
-            // query.{customer:{ $ne: null } }
-            query.select('customer business  category status grade comments');
+            });        
+            query.select('customer business  category status grade comments createTime');
+            query.find({customer:{ $ne: null }});
             query.skip((page-1)*pageSize);
             query.limit(pageSize);             
     } ;
@@ -97,6 +93,7 @@ schema= new mongoose.Schema({
     sort ? query.sort(sort) :  query;
     
     return query.exec();
+
   
 
 // const aggregate =[

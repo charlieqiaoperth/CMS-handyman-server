@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 exports.connectToDB = () => {
-    const { DB_HOST, DB_PORT, DB_DATABASE, DB_USER, DB_PASSWORD } = process.env;
+    const { DB_HOST, DB_PORT, DB_DATABASE, DB_USER, DB_PASSWORD, DB_LOCAL_HOST} = process.env;
     
     let connectionString;
     if (DB_USER && DB_PASSWORD) {
