@@ -21,6 +21,9 @@ const mongoose = require('mongoose');
           ref: 'Order',
       }
     ]
+  },
+  {
+    timestamps: true
   });
 
   schema.statics.searchByQuery = async function (searchType, searchKeyword, pageRequested, pageSize, sortType, sortValue) {
@@ -36,7 +39,15 @@ const mongoose = require('mongoose');
     if (sortValue !== 1 && sortValue !== -1 ) {
       return 'sortValue is invalid';
     }
+    // 增加判断时间实现筛选, 6表示7月
+    // const start = new Date(1900, 06, 18);
+    // const end = new Date(2119, 06, 19);
+    // console.log(end);
     const data = await this.find({[searchType]: new RegExp(searchKeyword, 'i')})
+    // const data = await this.find({
+    //   [searchType]: new RegExp(searchKeyword, 'i') ,
+    //   createdAt: {$gte: start, $lte: end}
+    // })
       .skip((pageRequested-1) * pageSize)
       .limit(pageSize)
       .sort({[sortType]: sortValue})
