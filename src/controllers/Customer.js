@@ -26,13 +26,36 @@ async function getCustomer(req, res) {
 }
 
 async function getAllCustomers(req, res) {
-  const key = req.query.key;
-  const sort=req.query.sort;
-  const page=parseInt(req.query.page);
-  let pageSize = parseInt(req.query.pageSize);
-  if (!pageSize) { pageSize = 10} ;
-  const customers = await Customer.searchQuery(key,page,pageSize,sort);
-  return res.json(customers);
+  // const key = req.query.key;
+  // const sort=req.query.sort;
+  // const page=parseInt(req.query.page);
+  // let pageSize = parseInt(req.query.pageSize);
+  // if (!pageSize) { pageSize = 10} ;
+  // const customers = await Customer.searchQuery(key,page,pageSize,sort);
+  // return res.json(customers);
+
+  const {
+    searchType = 'customerName',
+    searchKeyword,
+    pageRequested = 1,
+    pageSize = 5,
+    sortType = 'customerName',
+    sortValue = 1,
+  } = req.query;
+  let customerCount;
+  if (!searchType) {
+    customerCount = await Customer.countDocuments();
+  } else {
+    customerCount = await Customer.countDocuments({[searchType]: new RegExp(searchKeyword, 'i')});
+  }
+  const customers = await Customer.searchByQuery(searchType, searchKeyword, pageRequested, pageSize, sortType, sortValue);
+  if (!customers || customers.length === 0) {
+    return res.status(404).json('Customers are not found');
+  }
+  if (typeof(customers) === 'string') {
+    return res.status(500).json(customers);
+  }
+  return res.json({customerCount, customers});
 }
 
 async function updateCustomer(req, res) {
