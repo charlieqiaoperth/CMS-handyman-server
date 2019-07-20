@@ -38,13 +38,36 @@ async function getBusiness(req, res) {
 
 async function getAllBusinesses(req, res) {
   
-  const key = req.query.key;
-  const sort=req.query.sort;
-  const page=parseInt(req.query.page);
-  let pageSize = parseInt(req.query.pageSize);
-  if (!pageSize) { pageSize = 10} ;
-  const businesses = await Business.searchQuery(key,page,pageSize,sort);
-  return res.json(businesses);
+  // const key = req.query.key;
+  // const sort=req.query.sort;
+  // const page=parseInt(req.query.page);
+  // let pageSize = parseInt(req.query.pageSize);
+  // if (!pageSize) { pageSize = 10} ;
+  // const businesses = await Business.searchQuery(key,page,pageSize,sort);
+  // return res.json(businesses);
+
+  const {
+    searchType = 'businessName',
+    searchKeyword,
+    pageRequested = 1,
+    pageSize = 5,
+    sortType = 'businessName',
+    sortValue = 1,
+  } = req.query;
+  let businessCount;
+  if (!searchType) {
+    businessCount = await Business.countDocuments();
+  } else {
+    businessCount = await Business.countDocuments({[searchType]: new RegExp(searchKeyword, 'i')});
+  }
+  const businesses = await Business.searchByQuery(searchType, searchKeyword, pageRequested, pageSize, sortType, sortValue);
+  if (!businesses || businesses.length === 0) {
+    return res.status(404).json('Businesses are not found');
+  }
+  if (typeof(businesses) === 'string') {
+    return res.status(500).json(businesses);
+  }
+  return res.json({businessCount, businesses});
 }
 
 async function updateBusiness(req, res) {
