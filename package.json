@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "pm2-runtime start ecosystem.config.js --env production",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "lint": "eslint src",
+    "test": "jest",
+    "test-watch": "jest --verbose --watchAll --coverage"
   },
   "repository": {
     "type": "git",
@@ -33,7 +36,15 @@
     "swagger-ui-express": "^4.0.6"
   },
   "devDependencies": {
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.1",
+    "eslint": "^5.12.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^3.4.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "jest": "^24.1.0",
+    "prettier": "^1.15.3",
+    "supertest": "^3.4.2"
   },
   "engines": {
     "node": "10.x"
