@@ -5,8 +5,9 @@ const {
   addOrder,
   updateOrder,
   deleteOrder,
-  getOrder,  
+  getOrder
 } = require('../controllers/Order');
+
 const router = express.Router();
 
 router.get('/', getAllOrders);

@@ -1,16 +1,16 @@
 const Business = require('../models/business');
 const Category = require('../models/category');
 
-
 async function addBusiness(req, res) {
-  const { 
+  const {
     businessName,
     ABN,
     email,
     phone,
     streetAddress,
     postcode,
-    state } = req.body;
+    state
+  } = req.body;
 
   const business = new Business({
     businessName,
@@ -19,8 +19,7 @@ async function addBusiness(req, res) {
     phone,
     streetAddress,
     postcode,
-    state,
-      
+    state
   });
   await business.save();
   return res.status(201).json(business);
@@ -28,7 +27,10 @@ async function addBusiness(req, res) {
 
 async function getBusiness(req, res) {
   const { businessId } = req.params;
-  const business = await Business.findById(businessId).populate('categories','name');
+  const business = await Business.findById(businessId).populate(
+    'categories',
+    'name'
+  );
 
   if (!business) {
     return res.status(404).json('business not found');
@@ -37,49 +39,50 @@ async function getBusiness(req, res) {
 }
 
 async function getAllBusinesses(req, res) {
-  
-  // const key = req.query.key;
-  // const sort=req.query.sort;
-  // const page=parseInt(req.query.page);
-  // let pageSize = parseInt(req.query.pageSize);
-  // if (!pageSize) { pageSize = 10} ;
-  // const businesses = await Business.searchQuery(key,page,pageSize,sort);
-  // return res.json(businesses);
-
   const {
     searchType = 'businessName',
     searchKeyword,
     pageRequested = 1,
     pageSize = 5,
     sortType = 'businessName',
-    sortValue = 1,
+    sortValue = 1
   } = req.query;
   let businessCount;
   if (!searchType) {
     businessCount = await Business.countDocuments();
   } else {
-    businessCount = await Business.countDocuments({[searchType]: new RegExp(searchKeyword, 'i')});
+    businessCount = await Business.countDocuments({
+      [searchType]: new RegExp(searchKeyword, 'i')
+    });
   }
-  const businesses = await Business.searchByQuery(searchType, searchKeyword, pageRequested, pageSize, sortType, sortValue);
+  const businesses = await Business.searchByQuery(
+    searchType,
+    searchKeyword,
+    pageRequested,
+    pageSize,
+    sortType,
+    sortValue
+  );
   if (!businesses || businesses.length === 0) {
     return res.status(404).json('Businesses are not found');
   }
-  if (typeof(businesses) === 'string') {
+  if (typeof businesses === 'string') {
     return res.status(500).json(businesses);
   }
-  return res.json({businessCount, businesses});
+  return res.json({ businessCount, businesses });
 }
 
 async function updateBusiness(req, res) {
   const { businessId } = req.params;
-  const {  
+  const {
     businessName,
     ABN,
     email,
     phone,
     streetAddress,
     postcode,
-    state } = req.body;
+    state
+  } = req.body;
   const newBusiness = await Business.findByIdAndUpdate(
     businessId,
     { businessName,
@@ -90,7 +93,7 @@ async function updateBusiness(req, res) {
         postcode,
         state },
     {
-      new: true 
+      new: true
     }
   ).exec();
   if (!newBusiness) {
@@ -117,7 +120,7 @@ async function addCategory(req, res) {
   }
   business.categories.addToSet(category._id);
   category.businesses.addToSet(business._id);
-  
+
   await business.save();
   await category.save();
   return res.json(business);
@@ -127,7 +130,7 @@ async function deleteCategory(req, res) {
   const { businessId, categoryId } = req.params;
   const category = await Category.findById(categoryId).exec();
   const business = await Business.findById(businessId).exec();
-  if ( !category || !business) {
+  if (!category || !business) {
     return res.status(404).json('Business or Category not found');
   }
   const oldCount = business.categories.length;

@@ -4,8 +4,9 @@ const {
   addCustomer,
   updateCustomer,
   deleteCustomer,
-  getCustomer,  
+  getCustomer
 } = require('../controllers/Customer');
+
 const router = express.Router();
 
 router.get('/', getAllCustomers);

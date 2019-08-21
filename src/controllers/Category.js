@@ -2,15 +2,15 @@ const Category = require('../models/category');
 const Business = require('../models/business');
 
 async function addCategory(req, res) {
-  const { name, description, } = req.body;
-  const existingCategory = await Category.findOne({name});
+  const { name, description } = req.body;
+  const existingCategory = await Category.findOne({ name });
   console.log(existingCategory);
   if (existingCategory) {
-      return res.status(400).json('Category name has already existed');
+    return res.status(400).json('Category name has already existed');
   }
   const category = new Category({
     name,
-    description,    
+    description
   });
   await category.save();
   return res.status(201).json(category);
@@ -20,7 +20,7 @@ async function getCategory(req, res) {
   const { categoryId } = req.params;
   const category = await Category.findById(categoryId)
     .populate('businesses', 'businessName email')
-    .populate('orders', 'status')
+    .populate('orders', 'status');
 
   if (!category) {
     return res.status(404).json('Category not found');
@@ -29,32 +29,37 @@ async function getCategory(req, res) {
 }
 
 async function getAllCategories(req, res) {
-  // const categorys = await Category.find().exec();
-  // return res.json(categorys);
-
-  // added filter function and category count that meets the filter
   const {
     searchType = 'name',
     searchKeyword,
     pageRequested = 1,
     pageSize = 5,
     sortType = 'name',
-    sortValue = 1,
+    sortValue = 1
   } = req.query;
   let categoryCount;
   if (!searchType) {
     categoryCount = await Category.countDocuments();
   } else {
-    categoryCount = await Category.countDocuments({[searchType]: new RegExp(searchKeyword, 'i')});
+    categoryCount = await Category.countDocuments({
+      [searchType]: new RegExp(searchKeyword, 'i')
+    });
   }
-  const categories = await Category.searchByQuery(searchType, searchKeyword, pageRequested, pageSize, sortType, sortValue);
+  const categories = await Category.searchByQuery(
+    searchType,
+    searchKeyword,
+    pageRequested,
+    pageSize,
+    sortType,
+    sortValue
+  );
   if (!categories || categories.length === 0) {
     return res.status(404).json('Categories are not found');
   }
-  if (typeof(categories) === 'string') {
+  if (typeof categories === 'string') {
     return res.status(500).json(categories);
   }
-  return res.json({categoryCount, categories});
+  return res.json({ categoryCount, categories });
 }
 
 async function updateCategory(req, res) {
@@ -67,7 +72,7 @@ async function updateCategory(req, res) {
     return res.status(404).json('Category not found');
   }
   if (name !== category.name) {
-    const existingCategory = await Category.findOne({name});
+    const existingCategory = await Category.findOne({ name });
     if (existingCategory) {
       return res.status(400).json('Category name has already existed');
     }
@@ -80,7 +85,7 @@ async function updateCategory(req, res) {
   //   categoryId,
   //   { name, description },
   //   {
-  //     new: true 
+  //     new: true
   //   }
   // ).exec();
   // if (!newCategory) {
@@ -98,19 +103,19 @@ async function deleteCategory(req, res) {
 
   // delete category in Business documents
   await Business.updateMany(
-    {_id: {$in: category.businesses}},
-    {$pull: {categories: category._id}}
+    { _id: { $in: category.businesses } },
+    { $pull: { categories: category._id } }
   );
-  
+
   return res.status(200).json(category);
 }
 
 async function addBusinesstoCategory(req, res) {
-  const {categoryId, businessId} = req.params;
+  const { categoryId, businessId } = req.params;
   const existingCategory = await Category.findById(categoryId);
   const existingBusiness = await Business.findById(businessId);
-  if (!existingCategory || !existingBusiness) {   
-      return res.status(404).json('Category or business is not found');
+  if (!existingCategory || !existingBusiness) {
+    return res.status(404).json('Category or business is not found');
   }
   existingCategory.businesses.addToSet(existingBusiness._id);
   await existingCategory.save();
@@ -120,18 +125,18 @@ async function addBusinesstoCategory(req, res) {
 }
 
 async function deleteBusinessFromCategory(req, res) {
-  const {categoryId, businessId} = req.params;
+  const { categoryId, businessId } = req.params;
   const existingCategory = await Category.findById(categoryId);
   const existingBusiness = await Business.findById(businessId);
-  if (!existingCategory || !existingBusiness) {   
-      return res.status(404).json('Category or business is not found');
+  if (!existingCategory || !existingBusiness) {
+    return res.status(404).json('Category or business is not found');
   }
   existingCategory.businesses.pull(existingBusiness._id);
   await existingCategory.save();
   existingBusiness.categories.pull(existingCategory._id);
   await existingBusiness.save();
   return res.json(existingCategory);
-} 
+}
 
 // async function addCourse(req, res) {
 //   const { id, code } = req.params;

@@ -2,7 +2,6 @@ const Business = require('../models/business');
 const Customer = require('../models/customer');
 const Order = require('../models/order');
 
-
 async function addOrder(req, res) {
   const {
     customer,
@@ -10,12 +9,10 @@ async function addOrder(req, res) {
     category,
     status,
     timeRecord,
-    jobLocation,  
-    grade,  
+    jobLocation,
+    grade,
     Comments
-     } = req.body;
-    //  const grade=req.body.grade.toString();
-
+  } = req.body;
   const order = new Order({
     customer,
     business,
@@ -24,7 +21,7 @@ async function addOrder(req, res) {
     timeRecord,
     jobLocation,
     grade,
-    Comments      
+    Comments
   });
   await order.save();
   const customerConnection = await Customer.findById(customer).exec();
@@ -38,7 +35,10 @@ async function addOrder(req, res) {
 
 async function getOrder(req, res) {
   const { orderId } = req.params;
-  const order = await Order.findById(orderId).populate('customer','customerName').populate('business','businessName').populate('category','name');
+  const order = await Order.findById(orderId)
+    .populate('customer', 'customerName')
+    .populate('business', 'businessName')
+    .populate('category', 'name');
 
   if (!order) {
     return res.status(404).json('order not found');
@@ -47,58 +47,56 @@ async function getOrder(req, res) {
 }
 
 async function getAllOrders(req, res) {
-  let searchType=req.query.searchType; 
-  const key = req.query.key;
-  const sort=req.query.sort;
-  const page=parseInt(req.query.page);
+  const {searchType} = req.query; 
+  const {key} = req.query;
+  const {sort} = req.query;
+  const page = parseInt(req.query.page);
   let pageSize = parseInt(req.query.pageSize);
-  if (!pageSize) { pageSize = 20} ;
+  if (!pageSize) {
+    pageSize = 20;
+  }
   let orders = await Order.searchQuery(searchType, key, page, pageSize, sort);
-  orders=orders.filter((e)=>{
-    return e.customer !==null &&
-           e.business !==null
-}) ;
+  orders = orders.filter(e => e.customer !==null &&
+           e.business !==null) ;
 
-  if ( orders.length===0) {return res.status(404).json('order not found')};
+  if (orders.length === 0) {
+    return res.status(404).json('order not found');
+  }
   return res.json(orders);
 }
 
 async function updateOrder(req, res) {
   const { orderId } = req.params;
-  const {  
-    category,
-    status,   
-    jobLocation,
-    // timeRecord,
-    grade,
-    Comments  } = req.body;
-   
+  const { category, status, jobLocation, grade, Comments } = req.body;
 
   const newOrder = await Order.findByIdAndUpdate(
     orderId,
-    {  
-        category,
-        status,    
-        // timeRecord,    
-        jobLocation,
-        grade,
-        Comments  },
     {
-      new: true 
+      category,
+      status,
+      // timeRecord,
+      jobLocation,
+      grade,
+      Comments
+    },
+    {
+      new: true
     }
   ).exec();
- 
+
   if (!newOrder) {
     return res.status(404).json('Order not found');
-  };
-  
-  if ( status==="accepted" || status==="finished") {
-    const order = await Order.findById(orderId).exec();   
-    if (order.timeRecord.length>1) {return res.status(404).json('Record already exist') }
-    order.timeRecord.push(order.updateTime);  
+  }
+
+  if (status === 'accepted' || status === 'finished') {
+    const order = await Order.findById(orderId).exec();
+    if (order.timeRecord.length > 1) {
+      return res.status(404).json('Record already exist');
+    }
+    order.timeRecord.push(order.updateTime);
     await order.save();
     return res.json(order);
-    }  
+  }
   return res.json(newOrder);
 }
 
@@ -117,14 +115,12 @@ async function deleteOrder(req, res) {
   await businessConnection.save();
   await Order.findByIdAndDelete(orderId).exec();
   return res.sendStatus(200);
-};
-
-
+}
 
 module.exports = {
   addOrder,
   getAllOrders,
   getOrder,
   updateOrder,
-  deleteOrder,
+  deleteOrder
 };
